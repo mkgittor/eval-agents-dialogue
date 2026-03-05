@@ -1,0 +1,232 @@
+[33mcommit df950c1876016740cad5a8796d84493cfe8cfdcc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Yaqi Han <yaqihan@gmail.com>
+Date:   Thu Mar 5 18:33:46 2026 +0000
+
+    test commit
+
+[33mcommit 48fb234e6ed77fb2fec68884a3ed2926f2c093fa[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31mfork/main[m[33m)[m
+Author: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+Date:   Tue Mar 3 12:02:13 2026 -0500
+
+    [pre-commit.ci] pre-commit autoupdate (#74)
+    
+    updates:
+    - [github.com/astral-sh/uv-pre-commit: 0.10.4 → 0.10.7](https://github.com/astral-sh/uv-pre-commit/compare/0.10.4...0.10.7)
+    - [github.com/astral-sh/ruff-pre-commit: v0.15.2 → v0.15.4](https://github.com/astral-sh/ruff-pre-commit/compare/v0.15.2...v0.15.4)
+    
+    Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+[33mcommit 05b2decd01eea1b52ddbba1d8724affb8c5fcb88[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon Mar 2 09:54:49 2026 -0500
+
+    Bump astral-sh/setup-uv from 7.3.0 to 7.3.1 (#72)
+    
+    Bumps [astral-sh/setup-uv](https://github.com/astral-sh/setup-uv) from 7.3.0 to 7.3.1.
+    - [Release notes](https://github.com/astral-sh/setup-uv/releases)
+    - [Commits](https://github.com/astral-sh/setup-uv/compare/eac588ad8def6316056a12d4907a9d4d84ff7a3b...5a095e7a2014a4212f075830d4f7277575a9d098)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: astral-sh/setup-uv
+      dependency-version: 7.3.1
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+[33mcommit 911941917dad2bade94424db26fe777acae62f10[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Fri Feb 27 09:40:49 2026 -0500
+
+    Add unit tests for retry and token tracker modules (#71)
+    
+    * Add unit tests for retry and token tracker modules
+    
+    * Fix security vulnerability CVE-2026-27888 in pypdf
+    
+    Upgrade pypdf from 6.7.2 to >=6.7.3 to address RAM exhaustion vulnerability
+    in pypdf when accessing xfa property with FlateDecode compression.
+    
+    Co-authored-by: aieng-bot <aieng-bot@vectorinstitute.ai>
+    
+    ---------
+    
+    Co-authored-by: AI Engineering Bot <aieng-bot@vectorinstitute.ai>
+
+[33mcommit ffc4b74f1341bf2f45e92c287c7b8e28cb19425b[m
+Author: Marcelo Lotif <marcelo.lotif@vectorinstitute.ai>
+Date:   Thu Feb 26 10:07:29 2026 -0500
+
+    Using the evaluator model for evaluations
+
+[33mcommit f910351a6625754c4065ee38b16348eae7a7df84[m[33m ([m[1;31mfork/cibc-two[m[33m, [m[1;32mcibc-two[m[33m)[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 16:04:56 2026 -0500
+
+    Update license
+
+[33mcommit f0ff1983817e2df8a686a0b173889779cd27c04e[m[33m ([m[1;33mtag: [m[1;33mv0.3.0[m[33m, [m[1;31mfork/karthik-cibc2[m[33m)[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 11:05:21 2026 -0500
+
+    Bump up to 0.3.0 (#70)
+
+[33mcommit baa9ae1e4681940221d78b1ca9c035e80b5b2efe[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 09:43:10 2026 -0500
+
+    Update and fix config (#69)
+
+[33mcommit f49fd99b2a5c133cc3700c3469a5dbdb58a87d2e[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 09:03:33 2026 -0500
+
+    Update README.md
+
+[33mcommit 716f3f79d05c9a9f9f536ad079ff41a9149f02f9[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:59:24 2026 -0500
+
+    README.md
+
+[33mcommit 6e9819331626a965107ae931560650549af767eb[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:42:58 2026 -0500
+
+    Add README.md for basics notebooks
+
+[33mcommit a5ae99d7c4b3d91881ab0dab7e6f51500712e759[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:32:40 2026 -0500
+
+    Fix progress bar for vscode web
+
+[33mcommit b7568eda2ea81eb46770f3c131b1d934556cb854[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:12:34 2026 -0500
+
+    Remove bridging, google_api_key now exists
+
+[33mcommit 2bc139dbc7df05f53d661954877a11b7b655b33f[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:11:06 2026 -0500
+
+    Update .env.example
+
+[33mcommit 927ab216e1478a7aaba3204f8b5d7e167d302348[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 08:09:44 2026 -0500
+
+    Fixes to notebooks
+
+[33mcommit 3992f647e72896af0c50d99de0252e6e95e42bdf[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Wed Feb 25 00:14:24 2026 -0500
+
+    Fix notebooks, agent code (#68)
+    
+    * Fix notebooks, agent code
+    
+    * Fix tests
+
+[33mcommit d257762d910df42a6c99ead1051e8c33c91fa9cd[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Tue Feb 24 20:37:10 2026 -0500
+
+    Add knowledgeqa agent with refactored code (#67)
+    
+    * Add knowledgeqa agent with refactored code
+    
+    * Add token tracker
+    
+    * Fix re import
+    
+    * Remove dead code
+
+[33mcommit 0bb8e0f2efffc2325109f6d1a2abfc3d7e3edcd5[m
+Author: Marcelo Lotif <marcelo.lotif@vectorinstitute.ai>
+Date:   Tue Feb 24 15:34:24 2026 -0500
+
+    Actually adding the report generation diagram to the notebook
+
+[33mcommit ba3c754858fba19b90a712ef5703f6e3252b8273[m
+Author: Marcelo Lotif <lotif@users.noreply.github.com>
+Date:   Tue Feb 24 15:00:04 2026 -0500
+
+    Report Generation: Adding a system diagram (#66)
+    
+    * Adding a diagram of the system and adding the diagram to a notebook
+    
+    * Adding the diagram to the readme file
+
+[33mcommit 3505849a036a8a6e4bd287fde68fd222fb188b91[m
+Author: Franklin <41602287+fcogidi@users.noreply.github.com>
+Date:   Tue Feb 24 11:31:29 2026 -0500
+
+    Add notebooks for AML investigation use case (#63)
+    
+    * Add notebooks for AML investigation use case
+    
+    * Update variable names and remove `dtype_backend` for consistency
+    
+    * Add setting of google api key env var
+    
+    ---------
+    
+    Co-authored-by: Amrit Krishnan <amrit110@gmail.com>
+
+[33mcommit 6520a6a01d7a13baf0a19b65fcd8d4ebf2fabaec[m
+Author: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+Date:   Tue Feb 24 08:51:16 2026 -0500
+
+    [pre-commit.ci] pre-commit autoupdate (#65)
+    
+    updates:
+    - [github.com/astral-sh/uv-pre-commit: 0.10.3 → 0.10.4](https://github.com/astral-sh/uv-pre-commit/compare/0.10.3...0.10.4)
+    - [github.com/astral-sh/ruff-pre-commit: v0.15.1 → v0.15.2](https://github.com/astral-sh/ruff-pre-commit/compare/v0.15.1...v0.15.2)
+    
+    Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+[33mcommit 214618cddf5003b504e048d508947df8835601a3[m
+Author: Marcelo Lotif <lotif@users.noreply.github.com>
+Date:   Mon Feb 23 13:07:45 2026 -0500
+
+    Report Generation: Adding unit tests (#64)
+    
+    Adding unit tests for the report generation modules.
+    
+    Also:
+    
+        Removing langfuse project name variable (not needed given the langfuse key is already associated with the project)
+        Fixing some minor bugs that were found while writing the tests.
+        Updating pypdf v6.6.2 -> v6.7.2 to solve security issue (https://github.com/VectorInstitute/eval-agents/actions/runs/22316523156/job/64562889561?pr=64)
+
+[33mcommit ee83d88655b06cee209d8e6e69da96ebb1c471fd[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Fri Feb 20 13:36:14 2026 -0500
+
+    Small fix to use the openai_api_key config variable
+
+[33mcommit a786d292638ed5d92142a1817425b0364a81f977[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Fri Feb 20 09:21:37 2026 -0500
+
+    Bump to using 0.6.0 for the onboard system
+
+[33mcommit 5b6297c5afc994530cc3de7bc214c6763b3917f0[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Thu Feb 19 21:51:30 2026 -0500
+
+    Update LANGFUSE_BASE_URL to LANGFUSE_HOST
+
+[33mcommit 529ea1b103124142eede7392322c3f518f76b0a0[m
+Author: Amrit Krishnan <amrit110@gmail.com>
+Date:   Thu Feb 19 21:04:02 2026 -0500
+
+    Add integration test before workspace start (#62)
+
+[33mcommit 7c64405d17250637e42d157a78810d1ada649fb4[m
+Author: Amrit Krishna
