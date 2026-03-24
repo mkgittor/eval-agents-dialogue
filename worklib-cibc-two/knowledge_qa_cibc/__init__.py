@@ -22,7 +22,11 @@ from aieng.agent_evals.tools import (
 )
 
 from .agent import KnowledgeAgentManager, KnowledgeGroundedAgent
-from .data import BloombergNewsExample, BloombergFinancialNewsDataset
+from .data import (
+    BloombergFinancialNewsDataset,
+    BloombergNewsExample,
+    GoldenEvalMetadata,
+)
 
 
 __all__ = [
@@ -37,4 +41,5 @@ __all__ = [
     # Evaluation
     "BloombergFinancialNewsDataset",
     "BloombergNewsExample",
+    "GoldenEvalMetadata",
 ]
