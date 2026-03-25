@@ -23,7 +23,7 @@ from pathlib import Path
 
 from aieng.agent_evals.configs import Configs
 from aieng.agent_evals.evaluation.trace import flush_traces
-from aieng.agent_evals.knowledge_qa.deepsearchqa_grader import (
+from aieng.agent_evals.knowledge_qa.bloombergfinance_grader import (
     EvaluationOutcome,
     evaluate_deepsearchqa_async,
 )

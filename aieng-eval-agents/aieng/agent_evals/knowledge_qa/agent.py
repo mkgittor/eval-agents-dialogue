@@ -15,7 +15,7 @@ from typing import Any
 from aieng.agent_evals.configs import Configs
 from aieng.agent_evals.tools import (
     GroundingChunk,
-    create_fetch_file_tool,   
+    create_fetch_file_tool,
     create_google_search_tool,
     create_grep_file_tool,
     create_read_file_tool,

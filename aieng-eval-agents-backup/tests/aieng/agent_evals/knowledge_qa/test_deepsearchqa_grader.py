@@ -1,7 +1,7 @@
 """Tests for the DeepSearchQA grader."""
 
 import pytest
-from aieng.agent_evals.knowledge_qa.deepsearchqa_grader import (
+from aieng.agent_evals.knowledge_qa.bloombergfinance_grader import (
     DeepSearchQAResult,
     EvaluationOutcome,
     _calculate_metrics_from_grader,

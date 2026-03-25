@@ -4,10 +4,11 @@ This module provides tools for loading and managing benchmark datasets
 like DeepSearchQA.
 """
 
-from .deepsearchqa import DeepSearchQADataset, DSQAExample
+from .bloombergfinance import BloombergFinancialNewsDataset, BloombergNewsExample, GoldenEvalMetadata
 
 
 __all__ = [
-    "DSQAExample",
-    "DeepSearchQADataset",
+    "BloombergNewsExample",
+    "BloombergFinancialNewsDataset",
+    "GoldenEvalMetadata"
 ]
