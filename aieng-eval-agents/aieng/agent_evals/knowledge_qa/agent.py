@@ -27,7 +27,7 @@ from google.adk.apps.app import App, EventsCompactionConfig
 from google.adk.apps.llm_event_summarizer import LlmEventSummarizer
 from google.adk.models import Gemini
 from google.adk.planners import PlanReActPlanner
-from google.adk.runners import Runner
+from google.adk.runners import RunConfig, Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from google.genai.errors import ClientError
@@ -562,6 +562,7 @@ class KnowledgeGroundedAgent:
             user_id="user",
             session_id=adk_session_id,
             new_message=content,
+            run_config=RunConfig(max_llm_calls=3),
         ):
             event_count += 1
             self._process_event(event, question, results)
