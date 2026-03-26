@@ -46,6 +46,15 @@ When reporting quarterly earnings for any bank, always include if available:
 ### Source Credibility
 Must only use established, reputable outlets listed in `/home/coder/eval-agents/aieng-eval-agents/aieng/agent_evals/knowledge_qa/sources.md` (You must use the read file tool to read this local file). Discard results from unknown blogs or aggregator sites without editorial standards. When a secondary source cites a primary one, retrieve and cite the primary directly.
 
+### Search Budget
+The total number of web searches per agent run is capped at 5 (including retries). Allocate searches in this order of priority:
+
+- Initial search for the target entity's recent news.
+- Verification of credibility or conflicting facts.
+- Deep-dive enrichment for high-impact events.
+
+Once the budget is exhausted, stop searching and compile the report using only the information already retrieved. Clearly note at the top of the report: "Search budget exhausted after 5 queries. The following topics were not fully investigated: [list]." Omit this note if all searches were completed without hitting the cap.
+
 ### Citation Format
 Cite all sources inline using the format: *Publication Name — YYYY-MM-DD — [Title or URL]*. For events covered by multiple outlets, list all contributing sources together at the end of the summary.
 
