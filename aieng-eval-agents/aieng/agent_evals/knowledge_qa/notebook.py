@@ -156,14 +156,24 @@ def _format_display_html(plan: "ResearchPlan | None", tool_calls: list[dict], qu
     return "\n".join(html)
 
 
-def _parse_response_sections(text: str) -> tuple[str, list[str], str]:
-    """Extract answer, sources, and reasoning from structured agent response text.
+def _parse_response_sections(text: str) -> dict[str, str]:
+    """Extract structured sections from agent response text.
 
-    The agent formats its final response as::
+    Supports two formats:
 
-        ANSWER: <direct answer>
-        SOURCES: <url(s)>
-        REASONING: <supporting quote or explanation>
+    **New format** (structured output)::
+
+        **HEADLINE:** ...
+        **IMPACT:** ...
+        **KEY FIGURES:** ...
+        **ANALYSIS:** ...
+        **SOURCES:** ...
+
+    **Legacy format**::
+
+        ANSWER: ...
+        SOURCES: ...
+        REASONING: ...
 
     Parameters
     ----------
@@ -172,23 +182,44 @@ def _parse_response_sections(text: str) -> tuple[str, list[str], str]:
 
     Returns
     -------
-    tuple[str, list[str], str]
-        ``(answer, sources, reasoning)`` where *sources* is a list of URLs.
-        If the text does not contain the expected sections, the full text is
-        returned as the answer with empty sources and reasoning.
+    dict[str, str]
+        Parsed sections. Always contains at least ``"answer"`` and ``"sources"``.
     """
-    answer_match = re.search(r"ANSWER:\s*(.*?)(?=\n\s*SOURCES:|\n\s*REASONING:|$)", text, re.DOTALL | re.IGNORECASE)
-    sources_match = re.search(r"SOURCES:\s*(.*?)(?=\n\s*ANSWER:|\n\s*REASONING:|$)", text, re.DOTALL | re.IGNORECASE)
-    reasoning_match = re.search(r"REASONING:\s*(.*?)(?=\n\s*ANSWER:|\n\s*SOURCES:|$)", text, re.DOTALL | re.IGNORECASE)
+    sections: dict[str, str] = {}
 
-    answer = answer_match.group(1).strip() if answer_match else text
-    sources_raw = sources_match.group(1).strip() if sources_match else ""
-    reasoning = reasoning_match.group(1).strip() if reasoning_match else ""
+    # Try new structured format first
+    headline_match = re.search(r"\*?\*?HEADLINE:\*?\*?\s*(.*?)(?=\n\s*\*?\*?(?:IMPACT|KEY FIGURES|ANALYSIS|SOURCES):|$)", text, re.DOTALL | re.IGNORECASE)
+    impact_match = re.search(r"\*?\*?IMPACT:\*?\*?\s*(.*?)(?=\n\s*\*?\*?(?:HEADLINE|KEY FIGURES|ANALYSIS|SOURCES):|$)", text, re.DOTALL | re.IGNORECASE)
+    key_figures_match = re.search(r"\*?\*?KEY FIGURES:\*?\*?\s*(.*?)(?=\n\s*\*?\*?(?:HEADLINE|IMPACT|ANALYSIS|SOURCES):|$)", text, re.DOTALL | re.IGNORECASE)
+    analysis_match = re.search(r"\*?\*?ANALYSIS:\*?\*?\s*(.*?)(?=\n\s*\*?\*?(?:HEADLINE|IMPACT|KEY FIGURES|SOURCES):|$)", text, re.DOTALL | re.IGNORECASE)
+    sources_match = re.search(r"\*?\*?SOURCES:\*?\*?\s*(.*?)(?=\n\s*\*?\*?(?:HEADLINE|IMPACT|KEY FIGURES|ANALYSIS):|$)", text, re.DOTALL | re.IGNORECASE)
 
-    # Sources may be newline- or comma-separated URLs
-    sources = [s.strip() for s in re.split(r"[\n,]+", sources_raw) if s.strip().startswith("http")]
+    is_new_format = headline_match is not None or impact_match is not None
 
-    return answer, sources, reasoning
+    if is_new_format:
+        if headline_match:
+            sections["headline"] = headline_match.group(1).strip()
+        if impact_match:
+            sections["impact"] = impact_match.group(1).strip()
+        if key_figures_match:
+            sections["key_figures"] = key_figures_match.group(1).strip()
+        if analysis_match:
+            sections["analysis"] = analysis_match.group(1).strip()
+        if sources_match:
+            sections["sources"] = sources_match.group(1).strip()
+        # Build combined answer for grading compatibility
+        sections["answer"] = sections.get("headline", "")
+    else:
+        # Legacy format
+        answer_match = re.search(r"ANSWER:\s*(.*?)(?=\n\s*SOURCES:|\n\s*REASONING:|$)", text, re.DOTALL | re.IGNORECASE)
+        legacy_sources = re.search(r"SOURCES:\s*(.*?)(?=\n\s*ANSWER:|\n\s*REASONING:|$)", text, re.DOTALL | re.IGNORECASE)
+        reasoning_match = re.search(r"REASONING:\s*(.*?)(?=\n\s*ANSWER:|\n\s*SOURCES:|$)", text, re.DOTALL | re.IGNORECASE)
+
+        sections["answer"] = answer_match.group(1).strip() if answer_match else text
+        sections["sources"] = legacy_sources.group(1).strip() if legacy_sources else ""
+        sections["reasoning"] = reasoning_match.group(1).strip() if reasoning_match else ""
+
+    return sections
 
 
 def display_response(
@@ -197,12 +228,10 @@ def display_response(
     title: str = "Answer",
     subtitle: str | None = None,
 ) -> None:
-    """Display a structured agent response with separated, styled sections.
+    """Display a structured agent response with styled sections.
 
-    Parses the ``ANSWER`` / ``SOURCES`` / ``REASONING`` structure from the
-    agent's final response text and renders each section with appropriate Rich
-    styling: the answer in a cyan panel, sources in a dimmed panel, and
-    reasoning in a muted panel.
+    Supports both the new structured format (HEADLINE/IMPACT/KEY FIGURES/
+    ANALYSIS/SOURCES) and the legacy format (ANSWER/SOURCES/REASONING).
 
     Parameters
     ----------
@@ -211,7 +240,7 @@ def display_response(
     text : str
         Raw response text from the agent.
     title : str, optional
-        Panel title for the answer section (default ``"Answer"``).
+        Panel title for the main section (default ``"Answer"``).
     subtitle : str, optional
         Panel subtitle, e.g. duration and tool-call count.
 
@@ -220,16 +249,35 @@ def display_response(
     >>> duration = f"{response.total_duration_ms / 1000:.1f}s"
     >>> display_response(console, response.text, subtitle=duration)
     """
-    answer, sources, reasoning = _parse_response_sections(text)
+    sections = _parse_response_sections(text)
 
-    console.print(Panel(Markdown(answer), title=title, border_style="cyan", subtitle=subtitle))
+    if "headline" in sections:
+        # New structured format
+        headline = sections.get("headline", "")
+        impact = sections.get("impact", "")
+        if headline:
+            console.print(Panel(f"[bold]{headline}[/bold]", title=title, border_style="cyan", subtitle=subtitle))
+        if impact:
+            # Color code by sentiment
+            color = "green" if "Bull" in impact else "red" if "Bear" in impact else "yellow"
+            console.print(Panel(f"[{color}]{impact}[/{color}]", title="Impact", border_style=color, padding=(0, 1)))
+        if sections.get("key_figures"):
+            console.print(Panel(Markdown(sections["key_figures"]), title="Key Figures", border_style="blue", padding=(0, 1)))
+        if sections.get("analysis"):
+            console.print(Panel(Markdown(sections["analysis"]), title="Analysis", border_style="magenta", padding=(0, 1)))
+    else:
+        # Legacy format
+        console.print(Panel(Markdown(sections.get("answer", text)), title=title, border_style="cyan", subtitle=subtitle))
+        if sections.get("reasoning"):
+            console.print(Panel(Markdown(sections["reasoning"]), title="[dim]Reasoning[/dim]", border_style="dim", padding=(0, 1)))
 
-    if sources:
-        src_lines = "\n".join(f"  [blue]{src}[/blue]" for src in sources[:6])
-        console.print(Panel(src_lines, title="Sources", border_style="dim", padding=(0, 1)))
-
-    if reasoning:
-        console.print(Panel(Markdown(reasoning), title="[dim]Reasoning[/dim]", border_style="dim", padding=(0, 1)))
+    # Sources — common to both formats
+    sources_raw = sections.get("sources", "")
+    if sources_raw:
+        source_lines = [s.strip() for s in re.split(r"[\n,]+", sources_raw) if s.strip()]
+        if source_lines:
+            src_display = "\n".join(f"  [blue]{src}[/blue]" for src in source_lines[:6])
+            console.print(Panel(src_display, title="Sources", border_style="dim", padding=(0, 1)))
 
 
 async def run_with_display(

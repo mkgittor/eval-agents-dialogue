@@ -1,4 +1,4 @@
-"""Knowledge-grounded QA agent using Google ADK with Google Search.
+"""Kn wledge-grounded QA agent using Google ADK with Google Search.
 
 This module provides a ReAct agent with built-in planning via Gemini's thinking
 mode that explicitly calls tools and shows the reasoning process through observable
@@ -22,12 +22,13 @@ from aieng.agent_evals.tools import (
     create_web_fetch_tool,
 )
 from google.adk.agents import Agent
+from google.adk.agents.invocation_context import LlmCallsLimitExceededError
 from google.adk.agents.context_cache_config import ContextCacheConfig
 from google.adk.apps.app import App, EventsCompactionConfig
 from google.adk.apps.llm_event_summarizer import LlmEventSummarizer
 from google.adk.models import Gemini
 from google.adk.planners import PlanReActPlanner
-from google.adk.runners import Runner
+from google.adk.runners import RunConfig, Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from google.genai.errors import ClientError
@@ -558,13 +559,20 @@ class KnowledgeGroundedAgent:
         }
 
         event_count = 0
-        async for event in self._runner.run_async(
-            user_id="user",
-            session_id=adk_session_id,
-            new_message=content,
-        ):
-            event_count += 1
-            self._process_event(event, question, results)
+        try:
+            async for event in self._runner.run_async(
+                user_id="user",
+                session_id=adk_session_id,
+                new_message=content,
+                run_config=RunConfig(max_llm_calls=20),
+            ):
+                event_count += 1
+                self._process_event(event, question, results)
+        except LlmCallsLimitExceededError:
+            logger.warning(
+                f"LLM call limit (20) reached after {event_count} events. "
+                f"Returning partial results with {len(results.get('tool_calls', []))} tool calls."
+            )
 
         logger.debug(f"Processed {event_count} events. Final response length: {len(results.get('final_response', ''))}")
         return results

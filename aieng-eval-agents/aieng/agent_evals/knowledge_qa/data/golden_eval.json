@@ -1,0 +1,392 @@
+[
+  {
+    "input": "What was Royal Bank of Canada's Q3 2013 net income?",
+    "expected_output": "C$2.3 billion ($2.19 billion), or C$1.52 a share",
+    "metadata": {
+      "example_id": 1,
+      "category": "earnings",
+      "answer_type": "Single Answer",
+      "bank": "RBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "RBC Tops Estimates as Third-Quarter Profit Rises 2.9%"
+    }
+  },
+  {
+    "input": "Why did Toronto-Dominion Bank's profit fall in Q3 2013?",
+    "expected_output": "Insurance losses from severe weather claims, including flooding in southern Alberta in June and a record deluge in Toronto that submerged parts of the city on June 8",
+    "metadata": {
+      "example_id": 2,
+      "category": "causal",
+      "answer_type": "Single Answer",
+      "bank": "TD",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "Toronto-Dominion Profit Falls 10% on Weather Insurance Costs"
+    }
+  },
+  {
+    "input": "What was Bank of Montreal's Q3 2013 net income and how did it compare to the prior year?",
+    "expected_output": "C$1.14 billion ($1.08 billion), or C$1.68 a share, up 17 percent from C$970 million, or C$1.42, a year earlier",
+    "metadata": {
+      "example_id": 3,
+      "category": "earnings",
+      "answer_type": "Single Answer",
+      "bank": "BMO",
+      "question_type": "single_article",
+      "source_date": "2013-08-27",
+      "source_headline": "Bank of Montreal Profit Tops Estimates on Consumer Loans"
+    }
+  },
+  {
+    "input": "What acquisition helped Scotiabank's Q3 2013 consumer lending results?",
+    "expected_output": "The C$3.1 billion purchase of ING Direct Canada in November, which bolstered loans and added about 1.8 million customers",
+    "metadata": {
+      "example_id": 4,
+      "category": "deals",
+      "answer_type": "Single Answer",
+      "bank": "Scotiabank",
+      "question_type": "single_article",
+      "source_date": "2013-08-27",
+      "source_headline": "Scotiabank Profit Beats Estimates as ING Unit Bolsters Earnings"
+    }
+  },
+  {
+    "input": "By what percentage did CIBC's Q3 2013 profit rise and what unit drove the growth?",
+    "expected_output": "5.8 percent, driven by its wealth-management unit",
+    "metadata": {
+      "example_id": 5,
+      "category": "earnings",
+      "answer_type": "Single Answer",
+      "bank": "CIBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "Canadian Imperial Profit Rises 5.8% on Wealth Management Gains"
+    }
+  },
+  {
+    "input": "What was TD Bank's wealth-management and insurance unit profit in Q3 2013?",
+    "expected_output": "C$7 million, down from C$360 million a year earlier",
+    "metadata": {
+      "example_id": 6,
+      "category": "earnings",
+      "answer_type": "Single Answer",
+      "bank": "TD",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "Toronto-Dominion Profit Falls 10% on Weather Insurance Costs"
+    }
+  },
+  {
+    "input": "What drove RBC's profit growth in Q3 2013?",
+    "expected_output": "A 51 percent increase in profit from its wealth-management unit, as fund sales and improving stock markets lifted fee-based client assets, plus contributions from RBC Investor Services after buying out partner Banque Internationale a Luxembourg SA in July 2012",
+    "metadata": {
+      "example_id": 7,
+      "category": "causal",
+      "answer_type": "Single Answer",
+      "bank": "RBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "RBC Tops Estimates as Third-Quarter Profit Rises 2.9%"
+    }
+  },
+  {
+    "input": "How much in Aeroplan credit card loans was CIBC managing as TD negotiations continued?",
+    "expected_output": "C$6 billion",
+    "metadata": {
+      "example_id": 8,
+      "category": "deals",
+      "answer_type": "Single Answer",
+      "bank": "CIBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "CIBC Has C$6 Billion of Aerogold Card Loans as TD Talks Continue"
+    }
+  },
+  {
+    "input": "Who was named Scotiabank's new Chief Risk Officer in August 2013?",
+    "expected_output": "Hart, replacing Pitfield who retired",
+    "metadata": {
+      "example_id": 9,
+      "category": "personnel",
+      "answer_type": "Single Answer",
+      "bank": "Scotiabank",
+      "question_type": "single_article",
+      "source_date": "2013-08-29",
+      "source_headline": "Scotiabank Names Hart Chief Risk Officer as Pitfield Retires"
+    }
+  },
+  {
+    "input": "Who was set to become the first female chairman of a Canadian bank?",
+    "expected_output": "RBC's Taylor",
+    "metadata": {
+      "example_id": 10,
+      "category": "personnel",
+      "answer_type": "Single Answer",
+      "bank": "RBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-30",
+      "source_headline": "RBC's Taylor to Be First Female Chairman of Canadian Bank"
+    }
+  },
+  {
+    "input": "Who left Canadian Imperial Bank of Commerce for National Bank in August 2013?",
+    "expected_output": "Hashimoto and Bhutani",
+    "metadata": {
+      "example_id": 11,
+      "category": "personnel",
+      "answer_type": "Set Answer",
+      "bank": "CIBC",
+      "question_type": "single_article",
+      "source_date": "2013-08-30",
+      "source_headline": "Hashimoto and Bhutani Leave Canadian Imperial for National Bank"
+    }
+  },
+  {
+    "input": "What was BMO's Q3 2013 revenue?",
+    "expected_output": "C$4.05 billion, up 4.4 percent from a year earlier",
+    "metadata": {
+      "example_id": 12,
+      "category": "earnings",
+      "answer_type": "Single Answer",
+      "bank": "BMO",
+      "question_type": "single_article",
+      "source_date": "2013-08-27",
+      "source_headline": "Bank of Montreal Profit Tops Estimates on Consumer Loans"
+    }
+  },
+  {
+    "input": "Compare the Q3 2013 earnings per share of all Big Five Canadian banks. Which had the highest and lowest EPS?",
+    "expected_output": "CIBC had the highest adjusted EPS at C$2.29, followed by BMO at C$1.68, TD at C$1.58, RBC at C$1.52, and Scotiabank at C$1.37. CIBC had the highest and Scotiabank had the lowest.",
+    "metadata": {
+      "example_id": 13,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple earnings articles across all five banks"
+    }
+  },
+  {
+    "input": "Which of Canada's Big Five banks raised their dividends in Q3 2013 and by how much?",
+    "expected_output": "Royal Bank of Canada raised its dividend 6.3 percent to 67 cents, Toronto-Dominion raised 4.9 percent to 85 cents, and Bank of Nova Scotia raised 3.3 percent to 62 cents",
+    "metadata": {
+      "example_id": 14,
+      "category": "comparative",
+      "answer_type": "Set Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple earnings articles"
+    }
+  },
+  {
+    "input": "Which Canadian Big Five bank reported the largest percentage profit increase in Q3 2013 and which reported a decline?",
+    "expected_output": "Bank of Montreal reported the largest increase at 17 percent. Toronto-Dominion was the only bank to report a decline, with profit falling 10 percent due to weather insurance costs.",
+    "metadata": {
+      "example_id": 15,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple earnings articles"
+    }
+  },
+  {
+    "input": "Both BMO and Scotiabank in Q3 2013 reported record profits in which business segments?",
+    "expected_output": "Both banks posted record results in Canadian consumer lending and wealth management",
+    "metadata": {
+      "example_id": 16,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27",
+      "source_headline": "BMO, Scotiabank Beat Estimates on Increased Lending"
+    }
+  },
+  {
+    "input": "What were the combined profits of Canada's six biggest lenders in fiscal Q3 2013 and why were analysts optimistic about the outlook?",
+    "expected_output": "Combined profits were C$8.05 billion ($7.6 billion), down 1.7 percent from a year earlier. Analysts were optimistic because rising interest rates were expected to make mortgages and car loans more profitable, with signs of emerging margin stability due to the increase in bond yields.",
+    "metadata": {
+      "example_id": 17,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-30",
+      "source_headline": "Canada Banks' Profits Poised to Rally as Rates Rise"
+    }
+  },
+  {
+    "input": "How did the Syria tensions in late August 2013 affect Canadian stocks and the Canadian dollar?",
+    "expected_output": "Canadian stocks fell with the benchmark index posting its biggest drop since June. The Canadian dollar weakened as the U.S. dollar's haven appeal rose, though it was partly supported by crude oil surging to the highest level since July on speculation Syria tensions would disrupt Middle East supplies.",
+    "metadata": {
+      "example_id": 18,
+      "category": "macro",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-28",
+      "source_headline": "Canadian Stocks Fall Most Since June on Syria Tensions; Canada Dollar Falls as Syria Bets Bolster U.S. Currency's Appeal"
+    }
+  },
+  {
+    "input": "Which Big Five banks saw wealth management as a key profit driver in Q3 2013?",
+    "expected_output": "Royal Bank of Canada, Canadian Imperial Bank of Commerce, Bank of Montreal, Bank of Nova Scotia",
+    "metadata": {
+      "example_id": 19,
+      "category": "comparative",
+      "answer_type": "Set Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple earnings articles"
+    }
+  },
+  {
+    "input": "What were the Q3 2013 net incomes of all Big Five Canadian banks ranked from highest to lowest?",
+    "expected_output": "RBC C$2.3 billion, Scotiabank C$1.77 billion, TD C$1.53 billion, BMO C$1.14 billion, CIBC C$890 million",
+    "metadata": {
+      "example_id": 20,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple earnings articles across all five banks"
+    }
+  },
+  {
+    "input": "What was Royal Bank of Canada's Q4 2013 net income?",
+    "expected_output": "This information is not available in the Bloomberg articles from late August 2013. Q4 2013 results had not been reported yet.",
+    "metadata": {
+      "example_id": 21,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "RBC",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - Q4 results not yet reported"
+    }
+  },
+  {
+    "input": "What was CIBC's credit rating from Moody's in August 2013?",
+    "expected_output": "This information is not available in the Bloomberg articles from August 27-30, 2013.",
+    "metadata": {
+      "example_id": 22,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "CIBC",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - not covered in dataset"
+    }
+  },
+  {
+    "input": "How many branches did TD Bank close in the United States in Q3 2013?",
+    "expected_output": "This information is not available in the Bloomberg articles from August 27-30, 2013.",
+    "metadata": {
+      "example_id": 23,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "TD",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - not covered in dataset"
+    }
+  },
+  {
+    "input": "What was Scotiabank's exposure to emerging market debt in Q3 2013?",
+    "expected_output": "This information is not available in the Bloomberg articles from August 27-30, 2013.",
+    "metadata": {
+      "example_id": 24,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "Scotiabank",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - not covered in dataset"
+    }
+  },
+  {
+    "input": "What was BMO's provision for credit losses in Q3 2013 compared to Q2 2013?",
+    "expected_output": "The exact Q2 comparison is not available, but BMO set aside less money for bad loans in Q3 2013 compared to the prior year.",
+    "metadata": {
+      "example_id": 25,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "BMO",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - Q2 comparison not in dataset"
+    }
+  },
+  {
+    "input": "Did any of the Big Five Canadian banks announce layoffs in August 2013?",
+    "expected_output": "No layoff announcements from the Big Five banks are reported in the Bloomberg articles from August 27-30, 2013.",
+    "metadata": {
+      "example_id": 26,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - not covered in dataset"
+    }
+  },
+  {
+    "input": "What was the share price performance of Big Five Canadian bank stocks relative to the S&P/TSX Financials Index in the week of August 27-30, 2013?",
+    "expected_output": "CIBC shares had climbed 0.6 percent for the year compared to a 5.7 percent rise in the S&P/TSX Financials Index. National Bank gained 2.4 percent on its earnings day, making it the best performer. Canadian stocks overall fell with the biggest drop since June on Syria tensions, but then rose as telecom and bank stocks gained.",
+    "metadata": {
+      "example_id": 27,
+      "category": "market",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "Multiple articles"
+    }
+  },
+  {
+    "input": "By how much did RBC and Scotiabank each raise their dividends in Q3 2013?",
+    "expected_output": "RBC raised its dividend 6.3 percent to 67 cents a share. Scotiabank raised its dividend 3.3 percent to 62 cents a share.",
+    "metadata": {
+      "example_id": 28,
+      "category": "comparative",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-27 to 2013-08-29",
+      "source_headline": "RBC Tops Estimates; Scotiabank Profit Beats Estimates"
+    }
+  },
+  {
+    "input": "What was Canada's second-quarter GDP growth rate in 2013 and how did it affect expectations for the banks?",
+    "expected_output": "Canada's second-quarter growth slowed to a 1.7 percent pace. Despite this, analysts expected bank profits to rally as rising interest rates would make lending more profitable.",
+    "metadata": {
+      "example_id": 29,
+      "category": "macro",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "multi_article",
+      "source_date": "2013-08-30",
+      "source_headline": "Canada's Second-Quarter Growth Slows to 1.7% Pace; Canada Banks' Profits Poised to Rally"
+    }
+  },
+  {
+    "input": "What was the Bank of Canada's policy interest rate in August 2013 and was it expected to change?",
+    "expected_output": "This specific information is not available in the Bloomberg articles from August 27-30, 2013. The articles discuss rising bond yields and interest rate expectations but do not state the policy rate.",
+    "metadata": {
+      "example_id": 30,
+      "category": "unanswerable",
+      "answer_type": "Single Answer",
+      "bank": "all",
+      "question_type": "unanswerable",
+      "source_date": "N/A",
+      "source_headline": "N/A - policy rate not explicitly stated in dataset"
+    }
+  }
+]
