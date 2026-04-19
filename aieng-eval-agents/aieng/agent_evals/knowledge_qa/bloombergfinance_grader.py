@@ -40,6 +40,9 @@ class BloombergNewsResult(BaseModel):
     market_impact: float = Field(0.0, description="Does it explain implications for investors, stock price, or the sector? (0-1)")
     source_quality: float = Field(0.0, description="Does it cite credible sources with proper attribution? (0-1)")
     actionability: float = Field(0.0, description="Could a trader or analyst act on this information? (0-1)")
+    hallucination: float = Field(0.0, description="Does the response avoid fabricated or unverifiable claims not supported by sources? (0-1, higher is better)")
+    coherence: float = Field(0.0, description="Is the response logically structured, internally consistent, and easy to follow? (0-1)")
+    coverage: float = Field(0.0, description="Does the response address all aspects of the question without omitting key topics? (0-1)")
 
     overall_score: float = Field(0.0, description="Weighted average score (0-1)")
     quality: NewsQuality = Field(default=NewsQuality.POOR)
@@ -53,6 +56,9 @@ class BloombergNewsResult(BaseModel):
             f"Market Impact: {self.market_impact:.2f}\n"
             f"Source Quality: {self.source_quality:.2f}\n"
             f"Actionability: {self.actionability:.2f}\n"
+            f"Hallucination: {self.hallucination:.2f}\n"
+            f"Coherence: {self.coherence:.2f}\n"
+            f"Coverage: {self.coverage:.2f}\n"
             f"Overall: {self.overall_score:.2f}\n\n"
             f"Explanation: {self.explanation}"
         )
@@ -65,6 +71,9 @@ class BloombergNewsResult(BaseModel):
             Evaluation(name="Market Impact", value=self.market_impact, comment=comment),
             Evaluation(name="Source Quality", value=self.source_quality, comment=comment),
             Evaluation(name="Actionability", value=self.actionability, comment=comment),
+            Evaluation(name="Hallucination", value=self.hallucination, comment=comment),
+            Evaluation(name="Coherence", value=self.coherence, comment=comment),
+            Evaluation(name="Coverage", value=self.coverage, comment=comment),
         ]
 
     @staticmethod
@@ -78,6 +87,9 @@ class BloombergNewsResult(BaseModel):
             Evaluation(name="Market Impact", value=0.0, comment=comment),
             Evaluation(name="Source Quality", value=0.0, comment=comment),
             Evaluation(name="Actionability", value=0.0, comment=comment),
+            Evaluation(name="Hallucination", value=0.0, comment=comment),
+            Evaluation(name="Coherence", value=0.0, comment=comment),
+            Evaluation(name="Coverage", value=0.0, comment=comment),
         ]
 
 
@@ -95,7 +107,7 @@ You are a senior capital markets analyst evaluating an AI research assistant's
 output about Canadian Big Five bank news. You need this information to make
 portfolio and trading decisions.
 
-Evaluate the response on these five dimensions, each scored 0 to 1:
+Evaluate the response on these eight dimensions, each scored 0 to 1:
 
 1. Factual Accuracy (0-1)
 - Are financial figures (net income, EPS, revenue, percentages) correct?
@@ -129,6 +141,24 @@ Evaluate the response on these five dimensions, each scored 0 to 1:
 - Is the information specific enough (not vague generalizations)?
 - Does it distinguish between confirmed facts and speculation?
 
+6. Hallucination (0-1)
+- Does the response avoid fabricated, unverifiable, or invented claims not
+  supported by cited sources or well-established facts?
+- Score 0.0 if significant hallucinations are present. Score 1.0 if every
+  claim is grounded and verifiable.
+
+7. Coherence (0-1)
+- Is the response logically structured, internally consistent, and easy to follow?
+- Does it flow clearly from one point to the next without contradictions?
+- Score 0.0 if the response is disjointed or contradictory. Score 1.0 if it
+  reads as a well-organized, clear analytical narrative.
+
+8. Coverage (0-1)
+- Does the response address all aspects of the question without omitting key topics?
+- For multi-part questions, does it handle each part adequately?
+- Score 0.0 if major aspects of the question are ignored. Score 1.0 if the
+  response fully addresses the scope of the question.
+
 Overall Score: weighted average with these weights:
 - Factual Accuracy: 30%
 - Financial Completeness: 25%
@@ -151,6 +181,9 @@ Return JSON format:
     "Market Impact": float,
     "Source Quality": float,
     "Actionability": float,
+    "Hallucination": float,
+    "Coherence": float,
+    "Coverage": float,
     "Overall": float,
     "Quality": "excellent|good|fair|poor",
     "Explanation": "..."
@@ -171,6 +204,9 @@ def _parse_bloomberg_result(grader_result: dict[str, Any]) -> BloombergNewsResul
     market_impact = grader_result.get("Market Impact", 0.0)
     source_quality = grader_result.get("Source Quality", 0.0)
     actionability = grader_result.get("Actionability", 0.0)
+    hallucination = grader_result.get("Hallucination", 0.0)
+    coherence = grader_result.get("Coherence", 0.0)
+    coverage = grader_result.get("Coverage", 0.0)
     overall = grader_result.get("Overall", 0.0)
 
     quality = grader_result.get("Quality", "poor")
@@ -182,6 +218,9 @@ def _parse_bloomberg_result(grader_result: dict[str, Any]) -> BloombergNewsResul
         market_impact=market_impact,
         source_quality=source_quality,
         actionability=actionability,
+        hallucination=hallucination,
+        coherence=coherence,
+        coverage=coverage,
         overall_score=overall,
         quality=NewsQuality(quality),
         explanation=explanation,
@@ -253,6 +292,9 @@ class BloombergGroundTruthResult(BaseModel):
     precision: float = Field(default=0.0, description="Fraction of predicted items that are correct (0-1)")
     recall: float = Field(default=0.0, description="Fraction of ground truth items that were found (0-1)")
     f1_score: float = Field(default=0.0, description="Harmonic mean of precision and recall (0-1)")
+    hallucination: float = Field(default=0.0, description="Does the response avoid fabricated or unverifiable claims not supported by sources? (0-1, higher is better)")
+    coherence: float = Field(default=0.0, description="Is the response logically structured, internally consistent, and easy to follow? (0-1)")
+    coverage: float = Field(default=0.0, description="Does the response address all aspects of the question without omitting key topics? (0-1)")
     outcome: EvaluationOutcome = Field(default=EvaluationOutcome.FULLY_INCORRECT)
     correctness_details: dict[str, bool] = Field(default_factory=dict)
     extraneous_items: list[str] = Field(default_factory=list)
@@ -264,6 +306,9 @@ class BloombergGroundTruthResult(BaseModel):
             f"Precision: {self.precision:.2f}",
             f"Recall: {self.recall:.2f}",
             f"F1: {self.f1_score:.2f}",
+            f"Hallucination: {self.hallucination:.2f}",
+            f"Coherence: {self.coherence:.2f}",
+            f"Coverage: {self.coverage:.2f}",
         ]
         if self.explanation:
             comment_parts.append(f"\nExplanation: {self.explanation}")
@@ -288,6 +333,9 @@ class BloombergGroundTruthResult(BaseModel):
             Evaluation(name="F1", value=self.f1_score, comment=comment),
             Evaluation(name="Precision", value=self.precision, comment=comment),
             Evaluation(name="Recall", value=self.recall, comment=comment),
+            Evaluation(name="Hallucination", value=self.hallucination, comment=comment),
+            Evaluation(name="Coherence", value=self.coherence, comment=comment),
+            Evaluation(name="Coverage", value=self.coverage, comment=comment),
         ]
 
     @staticmethod
@@ -298,15 +346,31 @@ class BloombergGroundTruthResult(BaseModel):
             Evaluation(name="F1", value=0.0, comment=comment),
             Evaluation(name="Precision", value=0.0, comment=comment),
             Evaluation(name="Recall", value=0.0, comment=comment),
+            Evaluation(name="Hallucination", value=0.0, comment=comment),
+            Evaluation(name="Coherence", value=0.0, comment=comment),
+            Evaluation(name="Coverage", value=0.0, comment=comment),
         ]
 
+class AnswerCorrectnessResult(BaseModel):
+    explanation: str = Field(alias="Explanation", default="")
+    correctness_details: dict[str, bool] = Field(alias="Correctness Details", default_factory=dict)
+    excessive_answers: list[str] = Field(alias="Excessive Answers", default_factory=list)
+    hallucination: float = Field(alias="Hallucination", default=0.0)
+    coherence: float = Field(alias="Coherence", default=0.0)
+    coverage: float = Field(alias="Coverage", default=0.0)
+
+    model_config = {"populate_by_name": True}
 
 class BloombergGroundTruthGraderResponse(BaseModel):
     """Structured response from the ground-truth grader."""
 
-    answer_correctness: dict[str, Any] = Field(
-        alias="Answer Correctness",
-        description="Contains Explanation, Correctness Details, and Excessive Answers",
+    answer_correctness: AnswerCorrectnessResult = Field(alias="Answer Correctness")
+    #    ,description="Contains Explanation, Correctness Details, and Excessive Answers",)
+    
+    response_quality: dict[str, Any] = Field(
+        alias="Response Quality",
+        description="Contains Hallucination, Coherence, and Coverage scores",
+        default_factory=dict,
     )
 
 
@@ -362,8 +426,24 @@ do NOT count additional context, analysis, or source citations as excessive — 
 count factually distinct claims that contradict or go beyond the expected answer.
 Return an empty list when there are no excessive answers.
 
+**Response Quality Task**
+Also score the AI response independently on these three dimensions (0.0 to 1.0):
+
+* **Hallucination**: Does the response avoid fabricated or unverifiable claims not
+  supported by cited sources? Score 0.0 if significant hallucinations are present,
+  1.0 if every claim is grounded and verifiable.
+
+* **Coherence**: Is the response logically structured, internally consistent, and
+  easy to follow without contradictions? Score 0.0 if disjointed or contradictory,
+  1.0 if clear and well-organised.
+
+* **Coverage**: Does the response address all aspects of the question without
+  omitting key topics? Score 0.0 if major aspects are ignored, 1.0 if the full
+  scope of the question is addressed.
+
 **Output Format:**
-Return a valid JSON dictionary with the top-level key "Answer Correctness".
+Return a valid JSON dictionary with the single top-level key "Answer Correctness".
+Include the three quality scores as additional fields inside that same object.
 
 ```json
 {{
@@ -373,7 +453,10 @@ Return a valid JSON dictionary with the top-level key "Answer Correctness".
       "expected_item_1": true,
       "expected_item_2": false
     }},
-    "Excessive Answers": ["extra_item"]
+    "Excessive Answers": ["extra_item"],
+    "Hallucination": 0.0,
+    "Coherence": 0.0,
+    "Coverage": 0.0
   }}
 }}
 ```
@@ -400,11 +483,20 @@ Rating:
 """
 
 
-def _calculate_groundtruth_metrics(grader_result: dict[str, Any]) -> BloombergGroundTruthResult:
+def _calculate_groundtruth_metrics(grader_result: AnswerCorrectnessResult) -> BloombergGroundTruthResult:
     """Calculate precision, recall, F1 from grader output."""
-    correctness_details = grader_result.get("Correctness Details", {})
-    extraneous_items = grader_result.get("Excessive Answers", [])
-    explanation = grader_result.get("Explanation", "")
+    #correctness_details = grader_result.get("Correctness Details", {})
+    correctness_details = grader_result.correctness_details
+    #extraneous_items = grader_result.get("Excessive Answers", [])
+    extraneous_items = grader_result.excessive_answers
+    #explanation = grader_result.get("Explanation", "")
+    explanation = grader_result.explanation
+    #hallucination = grader_result.get("Hallucination", 0.0)
+    hallucination = grader_result.hallucination
+    #coherence = grader_result.get("Coherence", 0.0)
+    coherence = grader_result.coherence
+    #coverage = grader_result.get("Coverage", 0.0)
+    coverage = grader_result.coverage
 
     num_ground_truth = len(correctness_details)
     num_matched = sum(1 for v in correctness_details.values() if v)
@@ -428,6 +520,9 @@ def _calculate_groundtruth_metrics(grader_result: dict[str, Any]) -> BloombergGr
         precision=precision,
         recall=recall,
         f1_score=f1_score,
+        hallucination=hallucination,
+        coherence=coherence,
+        coverage=coverage,
         outcome=outcome,
         correctness_details=correctness_details,
         extraneous_items=extraneous_items,
@@ -443,7 +538,7 @@ async def evaluate_bloomberg_groundtruth_async(
     answer_type: str = "Single Answer",
     model_config: LLMRequestConfig | None = None,
 ) -> BloombergGroundTruthResult:
-    """Evaluate an answer against ground truth using precision/recall/F1.
+    """Evaluate an answer against ground truth using precision, recall, F1, hallucination, coherence, and coverage.
 
     Parameters
     ----------
@@ -461,7 +556,7 @@ async def evaluate_bloomberg_groundtruth_async(
     Returns
     -------
     BloombergGroundTruthResult
-        Evaluation result with precision, recall, F1, and outcome.
+        Evaluation result with precision, recall, F1, outcome, hallucination, coherence, and coverage.
     """
     config = model_config or LLMRequestConfig()
     client_manager = AsyncClientManager.get_instance()
@@ -484,6 +579,7 @@ async def evaluate_bloomberg_groundtruth_async(
         )
 
         parsed = completion.choices[0].message.parsed
+        logger.warning(f"RAW PARSED RESULT: {parsed.answer_correctness}")
         if parsed is None:
             raise ValueError("Null grader response")
 
@@ -491,6 +587,8 @@ async def evaluate_bloomberg_groundtruth_async(
 
     except Exception as e:
         logger.warning(f"Bloomberg ground-truth evaluation failed: {e}")
+        import traceback
+        logger.warning(traceback.format_exc())
         return BloombergGroundTruthResult(
             precision=0.0,
             recall=0.0,
