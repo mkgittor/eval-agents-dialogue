@@ -1,4 +1,4 @@
-"""Kn wledge-grounded QA agent using Google ADK with Google Search.
+"""Knowledge-grounded QA agent using Google ADK with Google Search.
 
 This module provides a ReAct agent with built-in planning via Gemini's thinking
 mode that explicitly calls tools and shows the reasoning process through observable
@@ -82,6 +82,87 @@ warnings.filterwarnings("ignore", message=r".*EXPERIMENTAL.*EventsCompactionConf
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Question-type classification helpers
+# ---------------------------------------------------------------------------
+
+# Simple question types that need fewer LLM calls and less thinking budget.
+_SIMPLE_QUESTION_TYPES = frozenset({"unanswerable", "single_article"})
+
+# Max LLM calls per question type: simple questions cap at 10, complex at 20.
+_MAX_LLM_CALLS: dict[str, int] = {
+    "unanswerable": 10,
+    "single_article": 10,
+    "multi_article": 20,
+}
+
+# Thinking token budget per question type.
+_THINKING_BUDGET: dict[str, int] = {
+    "unanswerable": 2048,
+    "single_article": 2048,
+    "multi_article": 6144,
+}
+
+_DEFAULT_MAX_LLM_CALLS = 20
+_DEFAULT_THINKING_BUDGET = 8192
+
+# ---------------------------------------------------------------------------
+# Module-level agent pool shared across all experiment tasks
+# ---------------------------------------------------------------------------
+
+# Pool size should match max_concurrency in run_experiment().
+_POOL_SIZE = 5
+
+_agent_pool: asyncio.Queue["KnowledgeGroundedAgent"] = asyncio.Queue()
+_pool_initialised = False
+_pool_lock = asyncio.Lock()
+
+
+async def _get_agent_pool() -> "asyncio.Queue[KnowledgeGroundedAgent]":
+    """Lazily initialise the shared agent pool on first call.
+
+    Agents are expensive to construct (ADK agent, tools, session service,
+    App/Runner). Building them once and resetting between questions eliminates
+    30x repeated construction overhead during a 30-question experiment.
+    """
+    global _pool_initialised
+    async with _pool_lock:
+        if not _pool_initialised:
+            for _ in range(_POOL_SIZE):
+                agent = KnowledgeGroundedAgent(enable_planning=True)
+                await _agent_pool.put(agent)
+            _pool_initialised = True
+    return _agent_pool
+
+
+# ---------------------------------------------------------------------------
+# Experiment task and evaluator (used by run_experiment)
+# ---------------------------------------------------------------------------
+
+async def agent_task(*, item: Any, **kwargs: Any) -> str:
+    """Run the Knowledge Agent on a Langfuse dataset item.
+
+    Pulls a pre-built agent from the pool, resets its state, runs the
+    question, then returns the agent to the pool. This avoids rebuilding
+    the ADK agent, tools, and session service on every question.
+    """
+    pool = await _get_agent_pool()
+    question_type = (item.metadata or {}).get("question_type", "")
+    agent = await pool.get()
+    try:
+        agent.reset()
+        response = await agent.answer_async(
+            item.input,
+            question_type=question_type,
+        )
+        return response.text
+    finally:
+        await pool.put(agent)
+
+
+# ---------------------------------------------------------------------------
+# Data models
+# ---------------------------------------------------------------------------
 
 class StepExecution(BaseModel):
     """Record of executing a single research step.
@@ -151,6 +232,10 @@ class AgentResponse(BaseModel):
     total_duration_ms: int = 0
 
 
+# ---------------------------------------------------------------------------
+# Agent
+# ---------------------------------------------------------------------------
+
 class KnowledgeGroundedAgent:
     """A ReAct agent with built-in planning via Gemini's thinking mode.
 
@@ -167,7 +252,8 @@ class KnowledgeGroundedAgent:
     enable_planning : bool, default True
         Whether to enable the built-in planner (Gemini thinking mode).
     thinking_budget : int, default 8192
-        Token budget for the model's thinking/planning phase.
+        Default token budget for the model's thinking/planning phase.
+        Per-question overrides are applied via answer_async(question_type=...).
 
     Examples
     --------
@@ -202,10 +288,10 @@ class KnowledgeGroundedAgent:
         enable_compaction : bool, default True
             Whether to enable context compaction. When enabled, ADK automatically
             summarizes older events to prevent running out of context.
-        compaction_interval : int, default 3
+        compaction_interval : int, default 10
             Number of invocations before triggering context compaction.
         thinking_budget : int, default 8192
-            Token budget for the model's thinking/planning phase.
+            Default token budget for the model's thinking/planning phase.
         """
         self._enable_compaction = enable_compaction
         self._compaction_interval = compaction_interval
@@ -217,6 +303,10 @@ class KnowledgeGroundedAgent:
         self.temperature = config.default_temperature
         self.enable_planning = enable_planning
         self._thinking_budget = thinking_budget
+
+        # Per-run question type; set by answer_async() before each run.
+        # Controls adaptive LLM call cap and thinking budget.
+        self._question_type: str = ""
 
         # Create tools - use function tool for search so agent sees actual URLs
         self._search_tool = create_google_search_tool(config=config)
@@ -321,6 +411,23 @@ class KnowledgeGroundedAgent:
         model_lower = model.lower()
         return "gemini-2.5" in model_lower or "gemini-3" in model_lower
 
+    def _effective_thinking_budget(self) -> int:
+        """Return the thinking token budget appropriate for the current question type.
+
+        Simple question types (unanswerable, single_article) use a reduced
+        budget of 2048 tokens. Complex multi-article questions retain the
+        higher default. Falls back to the instance default for unknown types.
+        """
+        return _THINKING_BUDGET.get(self._question_type, self._thinking_budget)
+
+    def _effective_max_llm_calls(self) -> int:
+        """Return the LLM call cap appropriate for the current question type.
+
+        Simple questions cap at 10 calls; complex questions at 20. Falls back
+        to the module-level default for unknown question types.
+        """
+        return _MAX_LLM_CALLS.get(self._question_type, _DEFAULT_MAX_LLM_CALLS)
+
     def reset(self) -> None:
         """Reset agent state for a new question.
 
@@ -330,6 +437,7 @@ class KnowledgeGroundedAgent:
         self._sessions.clear()
         self._session_service = InMemorySessionService()
         self._current_plan = None
+        self._question_type = ""
         self._token_tracker = TokenTracker(model=self.model)
 
         # Recreate runner with fresh session service
@@ -546,7 +654,12 @@ class KnowledgeGroundedAgent:
         question: str,
         adk_session_id: str,
     ) -> dict[str, Any]:
-        """Run the agent once and collect results (inner implementation)."""
+        """Run the agent once and collect results (inner implementation).
+
+        Uses the adaptive LLM call cap derived from the current question type
+        so that simple questions (unanswerable, single_article) stop earlier
+        and do not burn tokens unnecessarily.
+        """
         content = types.Content(role="user", parts=[types.Part(text=question)])
 
         # Collect results in a mutable dict for _process_event
@@ -558,19 +671,20 @@ class KnowledgeGroundedAgent:
             "final_response": "",
         }
 
+        max_llm_calls = self._effective_max_llm_calls()
         event_count = 0
         try:
             async for event in self._runner.run_async(
                 user_id="user",
                 session_id=adk_session_id,
                 new_message=content,
-                run_config=RunConfig(max_llm_calls=20),
+                run_config=RunConfig(max_llm_calls=max_llm_calls),
             ):
                 event_count += 1
                 self._process_event(event, question, results)
         except LlmCallsLimitExceededError:
             logger.warning(
-                f"LLM call limit (20) reached after {event_count} events. "
+                f"LLM call limit ({max_llm_calls}) reached after {event_count} events. "
                 f"Returning partial results with {len(results.get('tool_calls', []))} tool calls."
             )
 
@@ -640,6 +754,7 @@ class KnowledgeGroundedAgent:
         self,
         question: str,
         session_id: str | None = None,
+        question_type: str = "",
     ) -> AgentResponse:
         """Answer a question using built-in planning and tools.
 
@@ -652,14 +767,27 @@ class KnowledgeGroundedAgent:
             The question to answer.
         session_id : str, optional
             Session ID for multi-turn conversations.
+        question_type : str, optional
+            Question type metadata (e.g. "single_article", "multi_article",
+            "unanswerable"). Used to select the adaptive thinking budget and
+            LLM call cap for this run. Has no effect on agent behaviour or
+            reasoning — only on resource limits.
 
         Returns
         -------
         AgentResponse
             The response with plan, execution trace, and sources.
         """
+        # Store question type so _effective_* helpers can read it during the run.
+        self._question_type = question_type
+
         start_time = time.time()
-        logger.info(f"Answering question: {question[:100]}...")
+        logger.info(
+            f"Answering question (type={question_type!r}, "
+            f"max_llm_calls={self._effective_max_llm_calls()}, "
+            f"thinking_budget={self._effective_thinking_budget()}): "
+            f"{question[:100]}..."
+        )
 
         adk_session_id = await self._get_or_create_session_async(session_id)
 
@@ -756,6 +884,10 @@ class KnowledgeGroundedAgent:
         logger.info(f"Answering question (sync): {question[:100]}...")
         return asyncio.run(self.answer_async(question, session_id))
 
+
+# ---------------------------------------------------------------------------
+# Manager
+# ---------------------------------------------------------------------------
 
 class KnowledgeAgentManager:
     """Manages KnowledgeGroundedAgent lifecycle with lazy initialization.
