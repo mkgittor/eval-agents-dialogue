@@ -40,7 +40,7 @@
   },
   {
     "input": "What acquisition helped Scotiabank's Q3 2013 consumer lending results?",
-    "expected_output": "The C$3.1 billion purchase of ING Direct Canada in November, which bolstered loans and added about 1.8 million customers",
+    "expected_output": "The C$3.1 billion purchase of ING Direct Canada in November 2012, which bolstered loans and added about 1.8 million customers",
     "metadata": {
       "example_id": 4,
       "category": "deals",
@@ -79,7 +79,7 @@
   },
   {
     "input": "What drove RBC's profit growth in Q3 2013?",
-    "expected_output": "A 51 percent increase in profit from its wealth-management unit, as fund sales and improving stock markets lifted fee-based client assets, plus contributions from RBC Investor Services after buying out partner Banque Internationale a Luxembourg SA in July 2012",
+    "expected_output": "A 51 percent increase in profit from its wealth-management unit, as fund sales and improving stock markets lifted fee-based client assets, plus contributions from RBC Investor Services after buying out partner Dexia SA's stake in July 2012",
     "metadata": {
       "example_id": 7,
       "category": "causal",
@@ -105,7 +105,7 @@
   },
   {
     "input": "Who was named Scotiabank's new Chief Risk Officer in August 2013?",
-    "expected_output": "Hart, replacing Pitfield who retired",
+    "expected_output": "Stephen Hart, replacing Brian Pitfield who retired",
     "metadata": {
       "example_id": 9,
       "category": "personnel",
@@ -118,7 +118,7 @@
   },
   {
     "input": "Who was set to become the first female chairman of a Canadian bank?",
-    "expected_output": "RBC's Taylor",
+    "expected_output": "Kathleen Taylor of RBC",
     "metadata": {
       "example_id": 10,
       "category": "personnel",
@@ -157,7 +157,7 @@
   },
   {
     "input": "Compare the Q3 2013 earnings per share of all Big Five Canadian banks. Which had the highest and lowest EPS?",
-    "expected_output": "CIBC had the highest adjusted EPS at C$2.29, followed by BMO at C$1.68, TD at C$1.58, RBC at C$1.52, and Scotiabank at C$1.37. CIBC had the highest and Scotiabank had the lowest.",
+    "expected_output": "On an adjusted basis: CIBC had the highest EPS at C$2.29, followed by BMO at C$1.68, TD at C$1.58, RBC at C$1.52, and Scotiabank at C$1.37. CIBC had the highest and Scotiabank had the lowest.",
     "metadata": {
       "example_id": 13,
       "category": "comparative",
@@ -170,7 +170,7 @@
   },
   {
     "input": "Which of Canada's Big Five banks raised their dividends in Q3 2013 and by how much?",
-    "expected_output": "Royal Bank of Canada raised its dividend 6.3 percent to 67 cents, Toronto-Dominion raised 4.9 percent to 85 cents, and Bank of Nova Scotia raised 3.3 percent to 62 cents",
+    "expected_output": "Royal Bank of Canada raised its dividend 6.3 percent to 67 cents, Toronto-Dominion raised its dividend to 85 cents, Bank of Montreal raised its dividend to 74 cents, and Bank of Nova Scotia raised 3.3 percent to 62 cents",
     "metadata": {
       "example_id": 14,
       "category": "comparative",
@@ -196,7 +196,7 @@
   },
   {
     "input": "Both BMO and Scotiabank in Q3 2013 reported record profits in which business segments?",
-    "expected_output": "Both banks posted record results in Canadian consumer lending and wealth management",
+    "expected_output": "BMO posted record results in personal and commercial banking (Canadian consumer lending). Scotiabank posted a record in Canadian banking, driven by the ING Direct acquisition boosting consumer lending. Wealth management was a strong contributor for both but record is more clearly established for their consumer lending segments.",
     "metadata": {
       "example_id": 16,
       "category": "comparative",
